@@ -1,0 +1,53 @@
+#!/bin/bash
+set -e
+
+RUN_DIR=/var/vcap/sys/run/install_tools
+PIDFILE=${RUN_DIR}/pid
+
+case $1 in
+
+  start)
+    mkdir -p $RUN_DIR
+    chown -R vcap:vcap $RUN_DIR
+
+    echo 1 >> $PIDFILE
+
+    set +e
+
+    dpkg-query -W -f='${Status}\n' virtualbox | grep 'install ok installed'
+    DPKG_QUERY_RESULT_VBOX=$?
+    dpkg-query -W -f='${Status}\n' qemu | grep 'install ok installed'
+    DPKG_QUERY_RESULT_QEMU=$?
+    dpkg-query -W -f='${Status}\n' qemu-kvm | grep 'install ok installed'
+    DPKG_QUERY_RESULT_QEMU_KVM=$?
+    set -e
+
+    echo "deb http://download.virtualbox.org/virtualbox/debian trusty contrib" >> /etc/apt/sources.list
+    wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
+
+    apt-get update -y
+
+    if [ $DPKG_QUERY_RESULT_QEMU -ne 0 ]; then
+      apt-get install -y qemu
+    fi
+    if [ $DPKG_QUERY_RESULT_QEMU_KVM -ne 0 ]; then
+      apt-get install -y qemu-kvm
+    fi
+
+    if [ $DPKG_QUERY_RESULT_VBOX -eq 0 ]; then
+      apt-get install -y --only-upgrade virtualbox-4.3
+    else
+      apt-get install -y virtualbox-4.3
+    fi
+
+    ;;
+
+  stop)
+    rm -f $PIDFILE
+
+    ;;
+
+  *)
+    echo "Usage: ctl {start|stop}" ;;
+
+esac

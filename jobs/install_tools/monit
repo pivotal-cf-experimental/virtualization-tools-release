@@ -1,0 +1,7 @@
+<% name = "install_tools" %>
+
+check process <%= name %>
+  with pidfile /var/vcap/sys/run/<%= name %>/pid
+  start program "/var/vcap/jobs/<%= name %>/bin/ctl start"
+  stop program "/var/vcap/jobs/<%= name %>/bin/ctl stop"
+  group vcap
