@@ -1,0 +1,15 @@
+---
+packages: []
+jobs:
+- name: install_tools
+  version: 920c368e678ce3ed7526f3757b62248132c220ff
+  fingerprint: 920c368e678ce3ed7526f3757b62248132c220ff
+  sha1: 16e0e265097a0352cdbe4521a848860394fbd63b
+license:
+  version: 9841d3f4cf3430748ecd6b1c6308345f8bf9404a
+  fingerprint: 9841d3f4cf3430748ecd6b1c6308345f8bf9404a
+  sha1: dd31b14609637b6a9ac99d4f7c19e4d4e544661d
+commit_hash: 9eee66a7
+uncommitted_changes: true
+name: virtualization-tools-release
+version: '2'
