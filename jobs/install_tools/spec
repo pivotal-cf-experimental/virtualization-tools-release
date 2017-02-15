@@ -3,4 +3,7 @@ name: install_tools
 templates:
   ctl.erb: bin/ctl
 packages: []
-properties: {}
+properties:
+  virtualbox.version:
+    description: The version of VirtualBox to install
+    default: 4.3

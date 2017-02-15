@@ -20,6 +20,8 @@ case $1 in
     DPKG_QUERY_RESULT_QEMU=$?
     dpkg-query -W -f='${Status}\n' qemu-kvm | grep 'install ok installed'
     DPKG_QUERY_RESULT_QEMU_KVM=$?
+
+    VIRTUALBOX_PKG="virtualbox-<%= properties.virtualbox.version %>"
     set -e
 
     echo "deb http://download.virtualbox.org/virtualbox/debian trusty contrib" >> /etc/apt/sources.list
@@ -35,9 +37,9 @@ case $1 in
     fi
 
     if [ $DPKG_QUERY_RESULT_VBOX -eq 0 ]; then
-      apt-get install -y --only-upgrade virtualbox-4.3
+      apt-get install -y --only-upgrade ${VIRTUALBOX_PKG}
     else
-      apt-get install -y virtualbox-4.3
+      apt-get install -y ${VIRTUALBOX_PKG}
     fi
 
     ;;
