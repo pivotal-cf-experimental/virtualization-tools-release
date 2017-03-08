@@ -3,4 +3,4 @@ final_name: virtualization-tools-release
 blobstore:
   provider: local
   options:
-    blobstore_path: /tmp/
+    blobstore_path: .local_blobs
