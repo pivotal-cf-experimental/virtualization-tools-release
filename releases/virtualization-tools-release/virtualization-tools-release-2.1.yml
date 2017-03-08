@@ -8,7 +8,7 @@ jobs:
 license:
   version: 9841d3f4cf3430748ecd6b1c6308345f8bf9404a
   fingerprint: 9841d3f4cf3430748ecd6b1c6308345f8bf9404a
-  sha1: 8066ab9e4fe123bc5eb53589cd9271eaae3b965f
+  sha1: 1a23721f88513a84413e862c6ae5d81fe9f96a64
 commit_hash: fb3e9251
 uncommitted_changes: true
 name: virtualization-tools-release
