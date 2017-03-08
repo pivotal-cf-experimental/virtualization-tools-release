@@ -3,6 +3,7 @@ set -e
 
 RUN_DIR=/var/vcap/sys/run/install_tools
 PIDFILE=${RUN_DIR}/pid
+VIRTUALBOX_PKG="virtualbox-<%= properties.virtualbox.version %>"
 
 case $1 in
 
@@ -14,20 +15,20 @@ case $1 in
 
     set +e
 
-    dpkg-query -W -f='${Status}\n' virtualbox | grep 'install ok installed'
+    dpkg-query -W -f='${Status}\n' ${VIRTUALBOX_PKG} | grep 'install ok installed'
     DPKG_QUERY_RESULT_VBOX=$?
     dpkg-query -W -f='${Status}\n' qemu | grep 'install ok installed'
     DPKG_QUERY_RESULT_QEMU=$?
     dpkg-query -W -f='${Status}\n' qemu-kvm | grep 'install ok installed'
     DPKG_QUERY_RESULT_QEMU_KVM=$?
 
-    VIRTUALBOX_PKG="virtualbox-<%= properties.virtualbox.version %>"
     set -e
 
     echo "deb http://download.virtualbox.org/virtualbox/debian trusty contrib" >> /etc/apt/sources.list
     wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
 
     apt-get update -y
+    apt-get install -y build-essential gcc linux-headers-$(uname -r) dkms
 
     if [ $DPKG_QUERY_RESULT_QEMU -ne 0 ]; then
       apt-get install -y qemu
@@ -36,11 +37,19 @@ case $1 in
       apt-get install -y qemu-kvm
     fi
 
+    # uninstall any *other* versions of virtualbox
+    dpkg-query -W -f='${Package}\n' 'virtualbox-*.*' \
+      | grep -v ${VIRTUALBOX_PKG} \
+      | xargs apt-get purge -y
+
     if [ $DPKG_QUERY_RESULT_VBOX -eq 0 ]; then
       apt-get install -y --only-upgrade ${VIRTUALBOX_PKG}
     else
       apt-get install -y ${VIRTUALBOX_PKG}
     fi
+
+    # re-run virtualbox dynamic kernel module setup
+    /etc/init.d/vboxdrv setup
 
     ;;
 
